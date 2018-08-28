@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--suppress ALL -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanyun.platform.pay.dao.PayChnBillCheckHisDao">
+    <resultMap id="BaseResultMap" type="com.hanyun.platform.pay.domain.PayChnBillCheckHis">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="channel" property="channel" jdbcType="VARCHAR" />
+        <result column="bill_class" property="billClass" jdbcType="VARCHAR" />
+        <result column="check_date" property="checkDate" jdbcType="DATE" />
+        <result column="file_dl_status" property="fileDlStatus" jdbcType="SMALLINT" />
+        <result column="file_dl_times" property="fileDlTimes" jdbcType="INTEGER" />
+        <result column="file_dl_begin_time" property="fileDlBeginTime" jdbcType="TIMESTAMP" />
+        <result column="file_dl_finish_time" property="fileDlFinishTime" jdbcType="TIMESTAMP" />
+        <result column="bill_check_status" property="billCheckStatus" jdbcType="SMALLINT" />
+        <result column="bill_check_times" property="billCheckTimes" jdbcType="INTEGER" />
+        <result column="bill_check_begin_time" property="billCheckBeginTime" jdbcType="TIMESTAMP" />
+        <result column="bill_check_finish_time" property="billCheckFinishTime" jdbcType="TIMESTAMP" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, channel, bill_class, check_date, file_dl_status, file_dl_times, file_dl_begin_time,
+        file_dl_finish_time, bill_check_status, bill_check_times, bill_check_begin_time, bill_check_finish_time,
+        create_time,
+        update_time
+    </sql>
+    
+    <select id="select" resultMap="BaseResultMap" parameterType="com.hanyun.platform.pay.domain.PayChnBillCheckHis">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM pay_chn_bill_check_his
+        WHERE channel = #{channel,jdbcType=VARCHAR} 
+          AND bill_class = #{billClass,jdbcType=VARCHAR} 
+          AND check_date = #{checkDate,jdbcType=DATE}
+    </select>
+    
+    <insert id="insertSelective" parameterType="com.hanyun.platform.pay.domain.PayChnBillCheckHis">
+        INSERT INTO pay_chn_bill_check_his
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            channel,
+            bill_class,
+            check_date,
+            <if test="fileDlStatus != null">
+                file_dl_status,
+            </if>
+            <if test="fileDlTimes != null">
+                file_dl_times,
+            </if>
+            <if test="fileDlBeginTime != null">
+                file_dl_begin_time,
+            </if>
+            <if test="fileDlFinishTime != null">
+                file_dl_finish_time,
+            </if>
+            <if test="billCheckStatus != null">
+                bill_check_status,
+            </if>
+            <if test="billCheckTimes != null">
+                bill_check_times,
+            </if>
+            <if test="billCheckBeginTime != null">
+                bill_check_begin_time,
+            </if>
+            <if test="billCheckFinishTime != null">
+                bill_check_finish_time,
+            </if>
+            create_time,
+            update_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{channel,jdbcType=VARCHAR},
+            #{billClass,jdbcType=VARCHAR},
+            #{checkDate,jdbcType=DATE},
+            <if test="fileDlStatus != null">
+                #{fileDlStatus,jdbcType=SMALLINT},
+            </if>
+            <if test="fileDlTimes != null">
+                #{fileDlTimes,jdbcType=INTEGER},
+            </if>
+            <if test="fileDlBeginTime != null">
+                #{fileDlBeginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="fileDlFinishTime != null">
+                #{fileDlFinishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="billCheckStatus != null">
+                #{billCheckStatus,jdbcType=SMALLINT},
+            </if>
+            <if test="billCheckTimes != null">
+                #{billCheckTimes,jdbcType=INTEGER},
+            </if>
+            <if test="billCheckBeginTime != null">
+                #{billCheckBeginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="billCheckFinishTime != null">
+                #{billCheckFinishTime,jdbcType=TIMESTAMP},
+            </if>
+            now(),
+            now()
+        </trim>
+    </insert>
+    
+    <update id="updateSelective" parameterType="com.hanyun.platform.pay.domain.PayChnBillCheckHis">
+        UPDATE pay_chn_bill_check_his
+        <set>
+            <if test="fileDlStatus != null">
+                file_dl_status = #{fileDlStatus,jdbcType=SMALLINT},
+            </if>
+            <if test="fileDlTimes != null">
+                file_dl_times = #{fileDlTimes,jdbcType=INTEGER},
+            </if>
+            <if test="fileDlBeginTime != null">
+                file_dl_begin_time = #{fileDlBeginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="fileDlFinishTime != null">
+                file_dl_finish_time = #{fileDlFinishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="billCheckStatus != null">
+                bill_check_status = #{billCheckStatus,jdbcType=SMALLINT},
+            </if>
+            <if test="billCheckTimes != null">
+                bill_check_times = #{billCheckTimes,jdbcType=INTEGER},
+            </if>
+            <if test="billCheckBeginTime != null">
+                bill_check_begin_time = #{billCheckBeginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="billCheckFinishTime != null">
+                bill_check_finish_time = #{billCheckFinishTime,jdbcType=TIMESTAMP},
+            </if>
+            update_time = now()
+        </set>
+        WHERE channel = #{channel,jdbcType=VARCHAR} 
+          AND bill_class = #{billClass,jdbcType=VARCHAR} 
+          AND check_date = #{checkDate,jdbcType=DATE} 
+    </update>
+   <!-- 更新下载对账记录 -->
+    <update id="updateDownloadBillSelective" parameterType="com.hanyun.platform.pay.domain.PayChnBillCheckHis">
+        UPDATE pay_chn_bill_check_his
+        <set>
+                file_dl_status = #{fileDlStatus,jdbcType=SMALLINT},
+                file_dl_times = file_dl_times+1,
+                file_dl_begin_time = #{fileDlBeginTime,jdbcType=TIMESTAMP},
+                file_dl_finish_time = #{fileDlFinishTime,jdbcType=TIMESTAMP},
+                update_time = now()
+        </set>
+        WHERE channel = #{channel,jdbcType=VARCHAR} 
+          AND bill_class = #{billClass,jdbcType=VARCHAR} 
+          AND check_date = #{checkDate,jdbcType=DATE} 
+    </update>
+     <!-- 更新对账文件记录 -->
+     <update id="updateCheckBillSelective" parameterType="com.hanyun.platform.pay.domain.PayChnBillCheckHis">
+        UPDATE pay_chn_bill_check_his
+        <set>
+                bill_check_status = #{billCheckStatus,jdbcType=SMALLINT},
+                bill_check_times = bill_check_times+1,
+                bill_check_begin_time = #{billCheckBeginTime,jdbcType=TIMESTAMP},
+                bill_check_finish_time = #{billCheckFinishTime,jdbcType=TIMESTAMP},
+                update_time = now()
+        </set>
+        WHERE channel = #{channel,jdbcType=VARCHAR} 
+          AND bill_class = #{billClass,jdbcType=VARCHAR} 
+          AND check_date = #{checkDate,jdbcType=DATE} 
+    </update>
+    <!-- 获取所有记录信息 -->
+    <select id="getPayChnBillCheckHis" parameterType="com.hanyun.platform.pay.vo.paymode.PayChnBillHisReq" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM pay_chn_bill_check_his
+        WHERE channel = #{channel,jdbcType=VARCHAR} 
+          AND bill_class = #{billClass,jdbcType=VARCHAR}
+        ORDER  by check_date DESC 
+         LIMIT #{beginIndex,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER} 
+    </select>
+   <!-- 获取所有记录的条数 -->
+    <select id="getPayChnBillCheckHisCount" parameterType="com.hanyun.platform.pay.vo.paymode.PayChnBillHisReq" resultType="java.lang.Integer">
+        SELECT
+        	count(id)
+        FROM pay_chn_bill_check_his
+                WHERE channel = #{channel,jdbcType=VARCHAR} 
+          AND bill_class = #{billClass,jdbcType=VARCHAR} 
+        ORDER  by check_date DESC 
+    </select>
+           
+</mapper>

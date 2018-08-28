@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--suppress ALL -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanyun.platform.pay.dao.CibAlipayOrderDao">
+    <resultMap id="BaseResultMap" type="com.hanyun.platform.pay.domain.CibAlipayOrder">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="brand_id" property="brandId" jdbcType="VARCHAR" />
+        <result column="store_id" property="storeId" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="out_trade_no" property="outTradeNo" jdbcType="VARCHAR" />
+        <result column="transaction_id" property="transactionId" jdbcType="VARCHAR" />
+        <result column="pass_trade_no" property="passTradeNo" jdbcType="VARCHAR" />
+        <result column="version" property="version" jdbcType="VARCHAR" />
+        <result column="device_info" property="deviceInfo" jdbcType="VARCHAR" />
+        <result column="body" property="body" jdbcType="VARCHAR" />
+        <result column="attach" property="attach" jdbcType="VARCHAR" />
+        <result column="fee_type" property="feeType" jdbcType="VARCHAR" />
+        <result column="total_fee" property="totalFee" jdbcType="BIGINT" />
+        <result column="time_start" property="timeStart" jdbcType="VARCHAR" />
+        <result column="time_expire" property="timeExpire" jdbcType="VARCHAR" />
+        <result column="trade_type" property="tradeType" jdbcType="VARCHAR" />
+        <result column="openid" property="openid" jdbcType="VARCHAR" />
+        <result column="auth_code" property="authCode" jdbcType="VARCHAR" />
+        <result column="time_end" property="timeEnd" jdbcType="VARCHAR" />
+        <result column="trade_state" property="tradeState" jdbcType="VARCHAR" />
+        <result column="code_url" property="codeUrl" jdbcType="VARCHAR" />
+        <result column="charge_fee" property="chargeFee" jdbcType="BIGINT" />
+        <result column="charge_fee_rate" property="chargeFeeRate" jdbcType="BIGINT" />
+        <result column="buyer_logon_id" property="buyerLogonId" jdbcType="VARCHAR" />
+        <result column="fund_bill_list" property="fundBillList" jdbcType="VARCHAR" />
+        <result column="trade_no" property="tradeNo" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, brand_id, store_id, create_time, update_time, out_trade_no, transaction_id, pass_trade_no, version,
+        device_info, body, attach, fee_type, total_fee, time_start, time_expire, trade_type, openid, auth_code,
+        time_end, trade_state, code_url, charge_fee, charge_fee_rate, buyer_logon_id, fund_bill_list, trade_no
+    </sql>
+    
+    <select id="selectByOutTradeNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM cib_alipay_order
+        WHERE out_trade_no = #{outTradeNo,jdbcType=VARCHAR}
+    </select>
+    
+    <insert id="insert" parameterType="com.hanyun.platform.pay.domain.CibAlipayOrder">
+        INSERT INTO cib_alipay_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            brand_id,
+            store_id,
+            create_time,
+            update_time,
+            out_trade_no,
+            <if test="transactionId != null">
+                transaction_id,
+            </if>
+            <if test="passTradeNo != null">
+                pass_trade_no,
+            </if>
+            <if test="version != null">
+                version,
+            </if>
+            <if test="deviceInfo != null">
+                device_info,
+            </if>
+            <if test="body != null">
+                body,
+            </if>
+            <if test="attach != null">
+                attach,
+            </if>
+            <if test="feeType != null">
+                fee_type,
+            </if>
+            <if test="totalFee != null">
+                total_fee,
+            </if>
+            <if test="timeStart != null">
+                time_start,
+            </if>
+            <if test="timeExpire != null">
+                time_expire,
+            </if>
+            <if test="tradeType != null">
+                trade_type,
+            </if>
+            <if test="openid != null">
+                openid,
+            </if>
+            <if test="authCode != null">
+                auth_code,
+            </if>
+            <if test="timeEnd != null">
+                time_end,
+            </if>
+            <if test="tradeState != null">
+                trade_state,
+            </if>
+            <if test="codeUrl != null">
+                code_url,
+            </if>
+            <if test="chargeFee != null">
+                charge_fee,
+            </if>
+            <if test="chargeFeeRate != null">
+                charge_fee_rate,
+            </if>
+            <if test="buyerLogonId != null">
+                buyer_logon_id,
+            </if>
+            <if test="fundBillList != null">
+                fund_bill_list,
+            </if>
+            <if test="tradeNo != null">
+                trade_no,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{brandId,jdbcType=VARCHAR},
+            #{storeId,jdbcType=VARCHAR},
+            now(),
+            now(),
+            #{outTradeNo,jdbcType=VARCHAR},
+            <if test="transactionId != null">
+                #{transactionId,jdbcType=VARCHAR},
+            </if>
+            <if test="passTradeNo != null">
+                #{passTradeNo,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceInfo != null">
+                #{deviceInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="body != null">
+                #{body,jdbcType=VARCHAR},
+            </if>
+            <if test="attach != null">
+                #{attach,jdbcType=VARCHAR},
+            </if>
+            <if test="feeType != null">
+                #{feeType,jdbcType=VARCHAR},
+            </if>
+            <if test="totalFee != null">
+                #{totalFee,jdbcType=BIGINT},
+            </if>
+            <if test="timeStart != null">
+                #{timeStart,jdbcType=VARCHAR},
+            </if>
+            <if test="timeExpire != null">
+                #{timeExpire,jdbcType=VARCHAR},
+            </if>
+            <if test="tradeType != null">
+                #{tradeType,jdbcType=VARCHAR},
+            </if>
+            <if test="openid != null">
+                #{openid,jdbcType=VARCHAR},
+            </if>
+            <if test="authCode != null">
+                #{authCode,jdbcType=VARCHAR},
+            </if>
+            <if test="timeEnd != null">
+                #{timeEnd,jdbcType=VARCHAR},
+            </if>
+            <if test="tradeState != null">
+                #{tradeState,jdbcType=VARCHAR},
+            </if>
+            <if test="codeUrl != null">
+                #{codeUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="chargeFee != null">
+                #{chargeFee,jdbcType=BIGINT},
+            </if>
+            <if test="chargeFeeRate != null">
+                #{chargeFeeRate,jdbcType=BIGINT},
+            </if>
+            <if test="buyerLogonId != null">
+                #{buyerLogonId,jdbcType=VARCHAR},
+            </if>
+            <if test="fundBillList != null">
+                #{fundBillList,jdbcType=VARCHAR},
+            </if>
+            <if test="tradeNo != null">
+                #{tradeNo,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByOutTradeNo" parameterType="com.hanyun.platform.pay.domain.CibAlipayOrder">
+        UPDATE cib_alipay_order
+        <set>
+            update_time = now(),
+            <if test="transactionId != null">
+                transaction_id = #{transactionId,jdbcType=VARCHAR},
+            </if>
+            <if test="passTradeNo != null">
+                pass_trade_no = #{passTradeNo,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceInfo != null">
+                device_info = #{deviceInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="body != null">
+                body = #{body,jdbcType=VARCHAR},
+            </if>
+            <if test="attach != null">
+                attach = #{attach,jdbcType=VARCHAR},
+            </if>
+            <if test="feeType != null">
+                fee_type = #{feeType,jdbcType=VARCHAR},
+            </if>
+            <if test="totalFee != null">
+                total_fee = #{totalFee,jdbcType=BIGINT},
+            </if>
+            <if test="timeStart != null">
+                time_start = #{timeStart,jdbcType=VARCHAR},
+            </if>
+            <if test="timeExpire != null">
+                time_expire = #{timeExpire,jdbcType=VARCHAR},
+            </if>
+            <if test="tradeType != null">
+                trade_type = #{tradeType,jdbcType=VARCHAR},
+            </if>
+            <if test="openid != null">
+                openid = #{openid,jdbcType=VARCHAR},
+            </if>
+            <if test="authCode != null">
+                auth_code = #{authCode,jdbcType=VARCHAR},
+            </if>
+            <if test="timeEnd != null">
+                time_end = #{timeEnd,jdbcType=VARCHAR},
+            </if>
+            <if test="tradeState != null">
+                trade_state = #{tradeState,jdbcType=VARCHAR},
+            </if>
+            <if test="codeUrl != null">
+                code_url = #{codeUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="chargeFee != null">
+                charge_fee = #{chargeFee,jdbcType=BIGINT},
+            </if>
+            <if test="chargeFeeRate != null">
+                charge_fee_rate = #{chargeFeeRate,jdbcType=BIGINT},
+            </if>
+            <if test="buyerLogonId != null">
+                buyer_logon_id = #{buyerLogonId,jdbcType=VARCHAR},
+            </if>
+            <if test="fundBillList != null">
+                fund_bill_list = #{fundBillList,jdbcType=VARCHAR},
+            </if>
+            <if test="tradeNo != null">
+                trade_no = #{tradeNo,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE out_trade_no = #{outTradeNo,jdbcType=VARCHAR}
+    </update>
+</mapper>

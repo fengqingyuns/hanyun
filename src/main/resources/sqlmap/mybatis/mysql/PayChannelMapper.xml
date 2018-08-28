@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--suppress ALL -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanyun.platform.pay.dao.PayChannelDao">
+    <resultMap id="BaseResultMap" type="com.hanyun.platform.pay.domain.PayChannel">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="channel" property="channel" jdbcType="VARCHAR" />
+        <result column="chn_name" property="chnName" jdbcType="VARCHAR" />
+        <result column="chn_desc" property="chnDesc" jdbcType="VARCHAR" />
+        <result column="avail_status" property="availStatus" jdbcType="BIT" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, channel, chn_name, chn_desc, avail_status, create_time, update_time
+    </sql>
+
+    <select id="selectChannelList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM pay_channel
+    </select>
+
+    <select id="selectInSrvChannelList" resultMap="com.hanyun.platform.pay.dao.PayModeDao.PayModeResResultMap">
+        SELECT
+        pay_chn_mode.channel,
+        pay_chn_mode.pay_type,
+        pay_channel.chn_name
+        FROM
+        pay_chn_mode
+        LEFT JOIN
+        pay_channel
+        ON
+        pay_chn_mode.channel = pay_channel.channel
+        WHERE pay_chn_mode.srv_status=1
+    </select>
+
+    <update id="updateBychannel" parameterType="com.hanyun.platform.pay.domain.PayChannel">
+        UPDATE pay_channel
+        <set>
+            <if test="availStatus != null">
+                avail_status = #{availStatus,jdbcType=BIT},
+            </if>
+            update_time = now()
+        </set>
+        WHERE channel = #{channel,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getPayChannelByChannel" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        pay_channel
+        WHERE channel = #{channel,jdbcType=VARCHAR}
+    </select>
+</mapper>

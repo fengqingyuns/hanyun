@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--suppress ALL -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanyun.platform.pay.dao.CibMerchantStoreDao">
+    <resultMap id="BaseResultMap" type="com.hanyun.platform.pay.domain.CibMerchantStore">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="brand_id" property="brandId" jdbcType="VARCHAR"/>
+        <result column="store_id" property="storeId" jdbcType="VARCHAR"/>
+        <result column="cib_mch_id" property="cibMchId" jdbcType="VARCHAR"/>
+        <result column="cib_store_appid" property="cibStoreAppid" jdbcType="VARCHAR"/>
+        <result column="cib_store_name" property="cibStoreName" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, brand_id, store_id, cib_mch_id, cib_store_appid, cib_store_name, create_time, update_time
+    </sql>
+
+    <insert id="insertSelective" parameterType="com.hanyun.platform.pay.domain.CibMerchantStore">
+        INSERT INTO cib_merchant_store
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="brandId != null">
+                brand_id,
+            </if>
+            <if test="storeId != null">
+                store_id,
+            </if>
+            <if test="cibMchId != null">
+                cib_mch_id,
+            </if>
+            <if test="cibStoreAppid != null">
+                cib_store_appid,
+            </if>
+            <if test="cibStoreName != null">
+                cib_store_name,
+            </if>
+                update_time,
+                create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="brandId != null">
+                #{brandId,jdbcType=VARCHAR},
+            </if>
+            <if test="storeId != null">
+                #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="cibMchId != null">
+                #{cibMchId,jdbcType=VARCHAR},
+            </if>
+            <if test="cibStoreAppid != null">
+                #{cibStoreAppid,jdbcType=VARCHAR},
+            </if>
+            <if test="cibStoreName != null">
+                #{cibStoreName,jdbcType=VARCHAR},
+            </if>
+            
+                NOW(),
+                NOW()
+        </trim>
+    </insert>
+    
+    <select id="getCIBMerChantStoreByBrandId" parameterType="com.hanyun.platform.pay.vo.paychninfo.PayChnInfoListReq" resultMap="BaseResultMap" >
+        SELECT
+			<include refid="Base_Column_List"/>
+		FROM
+			cib_merchant_store
+		WHERE   brand_id = #{brandId,jdbcType=VARCHAR}
+	    order by update_time desc, create_time desc
+        LIMIT #{beginIndex,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+    </select>
+    
+    <select id="getCIBMerChantStoreCountByBrandId" parameterType="com.hanyun.platform.pay.vo.paychninfo.PayChnInfoListReq"  resultType="java.lang.Integer">
+        SELECT
+			count(id)
+		FROM
+			cib_merchant_store
+		WHERE   brand_id = #{brandId,jdbcType=VARCHAR}
+	    
+    </select>
+    
+    <select id="getByStoreId" parameterType="java.lang.String" resultMap="BaseResultMap" >
+        SELECT
+			<include refid="Base_Column_List"/>
+		FROM
+			cib_merchant_store
+		WHERE   store_id = #{storeId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateCIBMerChantStore" >
+        UPDATE cib_merchant_store
+        <set>
+            <if test="cibStoreAppid != null">
+                cib_store_appid = #{cibStoreAppid,jdbcType=VARCHAR},
+            </if>
+            <if test="cibStoreName != null">
+                cib_store_name = #{cibStoreName,jdbcType=VARCHAR},
+            </if>
+            update_time=NOW()
+        </set>
+        <where>
+            AND store_id = #{storeId,jdbcType=VARCHAR}
+            AND brand_id = #{brandId,jdbcType=VARCHAR}
+        </where>
+    </update>
+
+</mapper>

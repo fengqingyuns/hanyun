@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--suppress ALL -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanyun.platform.pay.dao.CibMerchantDao">
+    <resultMap id="BaseResultMap" type="com.hanyun.platform.pay.domain.CibMerchant">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="brand_id" property="brandId" jdbcType="VARCHAR"/>
+        <result column="cib_app_id" property="cibAppId" jdbcType="VARCHAR"/>
+        <result column="cib_mch_id" property="cibMchId" jdbcType="VARCHAR"/>
+        <result column="cib_sec_key" property="cibSecKey" jdbcType="VARCHAR"/>
+        <result column="avail_status" property="availStatus" jdbcType="TINYINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, brand_id, cib_app_id, cib_mch_id, cib_sec_key, avail_status, create_time, update_time
+    </sql>
+    
+    <insert id="insertSelective" parameterType="com.hanyun.platform.pay.domain.CibMerchant">
+        INSERT INTO cib_merchant
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                brand_id,
+                cib_app_id,
+                cib_mch_id,
+                cib_sec_key,
+                avail_status,
+                update_time,
+                create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                #{brandId,jdbcType=VARCHAR},
+                #{cibAppId,jdbcType=VARCHAR},
+                #{cibMchId,jdbcType=VARCHAR},
+                #{cibSecKey,jdbcType=VARCHAR},
+                #{availStatus,jdbcType=TINYINT},
+                NOW(),
+                NOW()
+        </trim>
+    </insert>
+    
+    <select id="getCIBMerChantList" parameterType="com.hanyun.platform.pay.vo.paychninfo.PayChnInfoListReq" resultMap="BaseResultMap">
+	     SELECT 
+	        <include refid="Base_Column_List"/>
+	        FROM cib_merchant
+	        <where>
+	            <if test="brandId != null and brandId != '' ">
+	                AND brand_id = #{brandId,jdbcType=VARCHAR}
+	            </if>
+	        </where>
+	        order by update_time desc, create_time desc
+            LIMIT #{beginIndex,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+    </select>
+    
+    <select id="getCIBMerChantListCount" parameterType="com.hanyun.platform.pay.vo.paychninfo.PayChnInfoListReq"  resultType="java.lang.Integer">
+	     SELECT 
+	        count(id)
+	        FROM cib_merchant
+	        <where>
+	            <if test="brandId != null and brandId != '' ">
+	                AND brand_id = #{brandId,jdbcType=VARCHAR}
+	            </if>
+	        </where>
+    </select>
+    
+    <select id="getByBrandId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>
+            FROM cib_merchant
+          WHERE brand_id = #{brandId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAvailMerchant" resultMap="BaseResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>
+            FROM cib_merchant
+            where avail_status = 0
+            <if test="brandId != null and brandId != '' ">
+                AND brand_id = #{brandId,jdbcType=VARCHAR}
+            </if>
+    </select>
+    <select id="getCIBMerChantAll" resultMap="BaseResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>
+            FROM cib_merchant
+    </select>
+<!--更新商户id  商户密匙-->
+    <update id="updateCibMchIdAndCibSeckey" parameterType="com.hanyun.platform.pay.domain.CibMerchant">
+        UPDATE cib_merchant
+        <set>
+            <if test="cibAppId != null">
+                cib_app_id = #{cibAppId,jdbcType=VARCHAR},
+            </if>
+            <if test="cibMchId != null">
+                cib_mch_id = #{cibMchId,jdbcType=VARCHAR},
+            </if>
+            <if test="cibSecKey != null">
+                cib_sec_key = #{cibSecKey,jdbcType=VARCHAR},
+            </if>
+            <if test="availStatus != null">
+                avail_status = #{availStatus,jdbcType=TINYINT},
+            </if>
+            update_time=NOW()
+        </set>
+        <where>
+            AND brand_id = #{brandId,jdbcType=VARCHAR}
+        </where>
+    </update>
+</mapper>

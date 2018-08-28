@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--suppress ALL -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanyun.platform.pay.dao.DistributeLockDao">
+    <resultMap id="BaseResultMap" type="com.hanyun.platform.pay.domain.DistributeLock">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="business_key" property="businessKey" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="TINYINT"/>
+        <result column="last_acquire_time" property="lastAcquireTime" jdbcType="TIMESTAMP"/>
+        <result column="last_release_time" property="lastReleaseTime" jdbcType="TIMESTAMP"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="operator" property="operator" jdbcType="VARCHAR"/>
+        <result column="operate_time" property="operateTime" jdbcType="TIMESTAMP"/>
+        <result column="operator_ip" property="operatorIp" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, business_key, status, last_acquire_time, last_release_time, create_time, operator, operate_time, operator_ip
+    </sql>
+    <!-- 获取锁的sql -->
+    <update id="updateReceiveDistributeLock" parameterType="com.hanyun.platform.pay.domain.DistributeLockReq" >
+        UPDATE distribute_lock
+        <set>
+              status = #{status,jdbcType=TINYINT},
+              last_acquire_time = now(),
+              operator = #{operator,jdbcType=VARCHAR},
+              operate_time = now(),
+              operator_ip = #{operatorIp,jdbcType=VARCHAR}
+        </set>
+        WHERE  business_key = #{businessKey,jdbcType=VARCHAR} and (status=0 or #{effectiveTime} <![CDATA[>]]> operate_time)
+    </update>
+    
+    <!-- 释放分布式锁 -->
+    <update id="updateFreedDistributeLock" parameterType="com.hanyun.platform.pay.domain.DistributeLock" >
+        UPDATE distribute_lock
+        <set>
+              status = #{status,jdbcType=TINYINT},
+              last_release_time = now(),
+              operator = null,
+              operate_time = null,
+              operator_ip = null
+              </set>
+        WHERE business_key = #{businessKey} 
+              and status = 1
+              and operator = #{operator}
+    </update>      
+        
+</mapper>

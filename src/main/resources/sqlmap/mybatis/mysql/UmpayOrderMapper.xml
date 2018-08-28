@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--suppress ALL -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanyun.platform.pay.dao.UmpayOrderDao">
+    <resultMap id="BaseResultMap" type="com.hanyun.platform.pay.domain.UmpayOrder">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="brand_id" property="brandId" jdbcType="VARCHAR" />
+        <result column="store_id" property="storeId" jdbcType="VARCHAR" />
+        <result column="trans_id" property="transId" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="out_trade_no" property="outTradeNo" jdbcType="VARCHAR" />
+        <result column="wpos_device_en" property="wposDeviceEn" jdbcType="VARCHAR" />
+        <result column="wpos_cashier_trade_no" property="wposCashierTradeNo" jdbcType="VARCHAR" />
+        <result column="wpos_voucher_no" property="wposVoucherNo" jdbcType="VARCHAR" />
+        <result column="wpos_ref_no" property="wposRefNo" jdbcType="VARCHAR" />
+        <result column="out_mch_no" property="outMchNo" jdbcType="VARCHAR" />
+        <result column="terminal_no" property="terminalNo" jdbcType="VARCHAR" />
+        <result column="terminal_trade_no" property="terminalTradeNo" jdbcType="VARCHAR" />
+        <result column="ref_no" property="refNo" jdbcType="VARCHAR" />
+        <result column="pay_time" property="payTime" jdbcType="TIMESTAMP" />
+        <result column="settle_date" property="settleDate" jdbcType="DATE" />
+        <result column="pay_amt" property="payAmt" jdbcType="BIGINT" />
+        <result column="settle_amt" property="settleAmt" jdbcType="BIGINT" />
+        <result column="charge_fee" property="chargeFee" jdbcType="BIGINT" />
+        <result column="trade_type" property="tradeType" jdbcType="VARCHAR" />
+        <result column="settle_type" property="settleType" jdbcType="VARCHAR" />
+        <result column="business_type" property="businessType" jdbcType="VARCHAR" />
+        <result column="bank_card_no" property="bankCardNo" jdbcType="VARCHAR" />
+        <result column="bank_card_type" property="bankCardType" jdbcType="VARCHAR" />
+        <result column="bank_channel_id" property="bankChannelId" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, brand_id, store_id, trans_id, create_time, update_time, out_trade_no, wpos_device_en,
+        wpos_cashier_trade_no, wpos_voucher_no, wpos_ref_no, out_mch_no, terminal_no, terminal_trade_no, ref_no,
+        pay_time,
+        settle_date, pay_amt, settle_amt, charge_fee, trade_type, settle_type, business_type, bank_card_no, bank_card_type,
+        bank_channel_id
+    </sql>
+    
+    <select id="selectByOutTradeNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM umpay_order
+        WHERE out_trade_no = #{outTradeNo,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="selectByTransId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM umpay_order
+        WHERE trans_id = #{transId,jdbcType=VARCHAR}
+    </select>
+    
+    <insert id="insertSelective" parameterType="com.hanyun.platform.pay.domain.UmpayOrder">
+        INSERT INTO umpay_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            brand_id,
+            store_id,
+            trans_id,
+            create_time,
+            update_time,
+            out_trade_no,
+            wpos_device_en,
+            <if test="wposCashierTradeNo != null">
+                wpos_cashier_trade_no,
+            </if>
+            <if test="wposVoucherNo != null">
+                wpos_voucher_no,
+            </if>
+            <if test="wposRefNo != null">
+                wpos_ref_no,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{brandId,jdbcType=VARCHAR},
+            #{storeId,jdbcType=VARCHAR},
+            #{transId,jdbcType=VARCHAR},
+            now(),
+            now(),
+            #{outTradeNo,jdbcType=VARCHAR},
+            #{wposDeviceEn,jdbcType=VARCHAR},
+            <if test="wposCashierTradeNo != null">
+                #{wposCashierTradeNo,jdbcType=VARCHAR},
+            </if>
+            <if test="wposVoucherNo != null">
+                #{wposVoucherNo,jdbcType=VARCHAR},
+            </if>
+            <if test="wposRefNo != null">
+                #{wposRefNo,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByTransIdSelective" parameterType="com.hanyun.platform.pay.domain.UmpayOrder">
+        UPDATE umpay_order
+        <set>
+            update_time = now(),
+            <if test="outTradeNo != null">
+                out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
+            </if>
+            <if test="wposDeviceEn != null">
+                wpos_device_en = #{wposDeviceEn,jdbcType=VARCHAR},
+            </if>
+            <if test="wposCashierTradeNo != null">
+                wpos_cashier_trade_no = #{wposCashierTradeNo,jdbcType=VARCHAR},
+            </if>
+            <if test="wposVoucherNo != null">
+                wpos_voucher_no = #{wposVoucherNo,jdbcType=VARCHAR},
+            </if>
+            <if test="wposRefNo != null">
+                wpos_ref_no = #{wposRefNo,jdbcType=VARCHAR},
+            </if>
+            <if test="outMchNo != null">
+                out_mch_no = #{outMchNo,jdbcType=VARCHAR},
+            </if>
+            <if test="terminalNo != null">
+                terminal_no = #{terminalNo,jdbcType=VARCHAR},
+            </if>
+            <if test="terminalTradeNo != null">
+                terminal_trade_no = #{terminalTradeNo,jdbcType=VARCHAR},
+            </if>
+            <if test="refNo != null">
+                ref_no = #{refNo,jdbcType=VARCHAR},
+            </if>
+            <if test="payTime != null">
+                pay_time = #{payTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="settleDate != null">
+                settle_date = #{settleDate,jdbcType=DATE},
+            </if>
+            <if test="payAmt != null">
+                pay_amt = #{payAmt,jdbcType=BIGINT},
+            </if>
+            <if test="settleAmt != null">
+                settle_amt = #{settleAmt,jdbcType=BIGINT},
+            </if>
+            <if test="chargeFee != null">
+                charge_fee = #{chargeFee,jdbcType=BIGINT},
+            </if>
+            <if test="tradeType != null">
+                trade_type = #{tradeType,jdbcType=VARCHAR},
+            </if>
+            <if test="settleType != null">
+                settle_type = #{settleType,jdbcType=VARCHAR},
+            </if>
+            <if test="businessType != null">
+                business_type = #{businessType,jdbcType=VARCHAR},
+            </if>
+            <if test="bankCardNo != null">
+                bank_card_no = #{bankCardNo,jdbcType=VARCHAR},
+            </if>
+            <if test="bankCardType != null">
+                bank_card_type = #{bankCardType,jdbcType=VARCHAR},
+            </if>
+            <if test="bankChannelId != null">
+                bank_channel_id = #{bankChannelId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE trans_id = #{transId,jdbcType=VARCHAR}
+    </update>
+    
+     <select id="selectBySettleDateAndRefNo" resultMap="BaseResultMap" parameterType="com.hanyun.platform.pay.domain.UmpayOrder">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM umpay_order
+        WHERE wpos_ref_no = #{wposRefNo,jdbcType=VARCHAR}
+        AND   DATE_FORMAT(create_time,'%Y-%m-%d') = #{settleDate,jdbcType=DATE}
+    </select>   
+    
+</mapper>

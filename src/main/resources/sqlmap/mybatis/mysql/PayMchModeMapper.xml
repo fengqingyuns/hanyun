@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--suppress ALL -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanyun.platform.pay.dao.PayMchModeDao">
+    <resultMap id="BaseResultMap" type="com.hanyun.platform.pay.domain.PayMchMode">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="pay_type" property="payType" jdbcType="VARCHAR"/>
+        <result column="brand_id" property="brandId" jdbcType="VARCHAR"/>
+        <result column="mch_fee_rate" property="mchFeeRate" jdbcType="INTEGER"/>
+        <result column="mch_fee_max" property="mchFeeMax" jdbcType="INTEGER"/>
+        <result column="avail_status" property="availStatus" jdbcType="BIT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    
+    <!-- 商户可用在线支付方式结果映射 -->
+    <resultMap id="OnlinePayTypeResultMap" type="com.hanyun.platform.pay.domain.MchActualPayModeInfo">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="pay_type" property="payType" jdbcType="VARCHAR" />
+        <result column="type_category" property="typeCategory" jdbcType="VARCHAR" />
+        <result column="channel" property="channel" jdbcType="VARCHAR" />
+        <result column="settle_type" property="settleType" jdbcType="BIT" />
+        <result column="chn_fee_rate" property="chnFeeRate" jdbcType="INTEGER" />
+        <result column="chn_fee_max" property="chnFeeMax" jdbcType="INTEGER" />
+        <result column="mch_fee_rate" property="mchFeeRate" jdbcType="INTEGER" />
+        <result column="mch_fee_max" property="mchFeeMax" jdbcType="INTEGER" />
+        <result column="mch_fee_rate_def" property="mchFeeRateDef" jdbcType="INTEGER" />
+        <result column="mch_fee_max_def" property="mchFeeMaxDef" jdbcType="INTEGER" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, pay_type, brand_id, mch_fee_rate, mch_fee_max, avail_status, create_time, update_time
+    </sql>
+    
+    <!-- 查找商户可用且在线的指定支付方式详情 -->
+    <select id="selectOnlinePayType" resultMap="OnlinePayTypeResultMap" parameterType="com.hanyun.platform.pay.domain.MchActualPayModeInfo">
+        select
+            pcm.pay_type,pcm.channel,pcm.settle_type,pcm.chn_fee_rate,pcm.chn_fee_max,
+            pm.mch_fee_rate_def,pm.mch_fee_max_def,pm.type_category,
+            pmm.mch_fee_rate,pmm.mch_fee_max
+        from
+            pay_mode pm
+            inner join pay_chn_mode pcm on pcm.pay_type = pm.pay_type and pcm.pay_type = #{payType,jdbcType=VARCHAR}
+            inner join pay_mch_mode pmm on pmm.pay_type = pcm.pay_type and pmm.brand_id = #{brandId,jdbcType=VARCHAR}
+        where
+            pcm.srv_status = 1 and pm.avail_status = 0 and pmm.avail_status = 0
+    </select>
+    
+    <!-- 查找商户所有可用且在线的支付方式 -->
+    <select id="selectMchAllOnlinePayType" resultMap="OnlinePayTypeResultMap" parameterType="java.lang.String">
+        select
+            pcm.pay_type, pcm.channel, pm.type_category
+        from
+            pay_mode pm
+            inner join pay_chn_mode pcm on pcm.pay_type = pm.pay_type
+            inner join pay_mch_mode pmm on pmm.pay_type = pcm.pay_type and pmm.brand_id = #{brandId,jdbcType=VARCHAR}
+        where
+            pcm.srv_status = 1 and pm.avail_status = 0 and pmm.avail_status = 0
+    </select>
+     
+    <!--修改商户费率与商户费率的封顶值  -->
+     <update id="updatePayMchMode" parameterType="com.hanyun.platform.pay.vo.paymode.PayMchModeReq">
+        UPDATE pay_mch_mode
+        <set>
+            <if test="mchFeeRate != null">
+                mch_fee_rate = #{mchFeeRate,jdbcType=INTEGER},
+            </if>
+            <if test="mchFeeMax != null">
+                mch_fee_max =  #{mchFeeMax,jdbcType=INTEGER},
+            </if>
+        </set>
+        WHERE pay_type = #{payType,jdbcType=VARCHAR} AND  brand_id = #{brandId,jdbcType=VARCHAR} 
+    </update>
+    
+    <!--查询通过品牌id  -->
+    <select id="getPayMchModeByBrandId" parameterType="com.hanyun.platform.pay.vo.paymode.PayMchModeReq" resultMap="BaseResultMap">
+       SELECT 
+        <include refid="Base_Column_List"/>
+        FROM pay_mch_mode
+        <where>
+            <if test="brandId != null">
+                AND brand_id = #{brandId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <!-- 修改商户支付方式使用状态  -->
+    <update id="updatemchavailstatus" parameterType="com.hanyun.platform.pay.vo.paymode.PayMchModeReq">
+        UPDATE pay_mch_mode
+        <set>
+            <if test="availStatus != null">
+                avail_status = #{availStatus,jdbcType=BIT},
+            </if>
+            update_time=NOW()
+        </set>
+         WHERE pay_type = #{payType,jdbcType=VARCHAR} AND  brand_id = #{brandId,jdbcType=VARCHAR}
+    </update>
+    <select id="getCountByBrandIdAndPayType" parameterType="com.hanyun.platform.pay.vo.paymode.PayMchModeReq" resultType="java.lang.Integer">
+    SELECT
+        COUNT(id)
+    FROM
+        pay_mch_mode
+    WHERE pay_type = #{payType,jdbcType=VARCHAR} AND  brand_id = #{brandId,jdbcType=VARCHAR}
+    </select>
+    <!-- 添加商户支付方式 -->
+    <insert id="insertPayMchMode" parameterType="com.hanyun.platform.pay.vo.paymode.PayMchModeReq">
+    INSERT  into  pay_mch_mode(
+        pay_type,
+        brand_id,
+        mch_fee_rate,
+        mch_fee_max,
+        create_time,
+        update_time)
+    VALUES(
+	    #{payType,jdbcType=VARCHAR},
+	    #{brandId,jdbcType=VARCHAR},
+	    #{mchFeeRate,jdbcType=INTEGER},
+	    #{mchFeeMax,jdbcType=INTEGER},
+	    NOW(),
+	    NOW())
+    </insert>
+    <insert id="insertByAvailstatus" parameterType="com.hanyun.platform.pay.vo.paymode.PayMchModeReq">
+         INSERT  into  pay_mch_mode(
+            pay_type,
+            brand_id,
+            avail_status,
+            create_time,
+            update_time
+            )
+         VALUES(
+            #{payType,jdbcType=VARCHAR},
+            #{brandId,jdbcType=VARCHAR},
+            #{availStatus,jdbcType=BIT},
+            NOW(),
+            NOW())
+    </insert>
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--suppress ALL -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanyun.platform.pay.dao.SettleInfoDao">
+    <resultMap id="BaseResultMap" type="com.hanyun.platform.pay.domain.SettleInfo">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="merchant_id" property="merchantId" jdbcType="VARCHAR"/>
+        <result column="brand_id" property="brandId" jdbcType="VARCHAR"/>
+        <result column="store_id" property="storeId" jdbcType="VARCHAR"/>
+        <result column="merchant_type" property="merchantType" jdbcType="TINYINT"/>
+        <result column="settle_level" property="settleLevel" jdbcType="TINYINT"/>
+        <result column="uniform_settle" property="uniformSettle" jdbcType="TINYINT"/>
+        <result column="settle_circle" property="settleCircle" jdbcType="TINYINT"/>
+        <result column="last_settle_time" property="lastSettleTime" jdbcType="TIMESTAMP"/>
+        <result column="last_state_time" property="lastStateTime" jdbcType="TIMESTAMP"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, merchant_id, brand_id, store_id, merchant_type, settle_level, uniform_settle, 
+        settle_circle, last_settle_time,last_state_time, create_time, update_time
+    </sql>
+    
+    
+    <insert id="insert" parameterType="com.hanyun.platform.pay.domain.SettleInfo">
+        INSERT INTO settle_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            merchant_id,
+            brand_id,
+            store_id,
+            merchant_type, 
+            <if test="settleLevel != null">
+            settle_level, 
+            </if>
+            <if test="uniformSettle != null">
+            uniform_settle,
+            </if>
+            settle_circle,
+            last_settle_time,
+            last_state_time,
+            create_time,
+            update_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{merchantId,jdbcType=VARCHAR},
+            #{brandId,jdbcType=VARCHAR},
+            #{storeId,jdbcType=VARCHAR},
+            #{merchantType,jdbcType=TINYINT},
+            <if test="settleLevel != null">
+            #{settleLevel,jdbcType=TINYINT},
+            </if>
+            <if test="uniformSettle != null">
+            #{uniformSettle,jdbcType=TINYINT},
+            </if>
+            #{settleCircle,jdbcType=TINYINT},
+            date_sub(now(), INTERVAL 1 DAY),
+            date_sub(now(), INTERVAL 1 DAY),
+            now(),
+            now()
+        </trim>
+    </insert>
+    
+</mapper>

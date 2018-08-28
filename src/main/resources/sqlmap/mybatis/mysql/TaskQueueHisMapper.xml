@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--suppress ALL -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanyun.platform.pay.dao.TaskQueueHisDao">
+    <resultMap id="BaseResultMap" type="com.hanyun.platform.pay.domain.TaskQueueHis">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="message_id" property="messageId" jdbcType="VARCHAR"/>
+        <result column="message_type" property="messageType" jdbcType="INTEGER"/>
+        <result column="message" property="message" jdbcType="VARCHAR"/>
+        <result column="pay_id" property="payId" jdbcType="VARCHAR"/>
+        <result column="trans_id" property="transId" jdbcType="VARCHAR"/>
+        <result column="retry_count" property="retryCount" jdbcType="INTEGER"/>
+        <result column="process_status" property="processStatus" jdbcType="TINYINT"/>
+        <result column="process_start_time" property="processStartTime" jdbcType="TIMESTAMP"/>
+        <result column="process_end_time" property="processEndTime" jdbcType="TIMESTAMP"/>
+        <result column="process_result_info" property="processResultInfo" jdbcType="VARCHAR"/>
+        <result column="last_process_time" property="lastProcessTime" jdbcType="TIMESTAMP"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="operator" property="operator" jdbcType="VARCHAR"/>
+        <result column="operate_time" property="operateTime" jdbcType="TIMESTAMP"/>
+        <result column="operator_ip" property="operatorIp" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, message_id, message_type, message, pay_id, trans_id, retry_count, process_status, process_start_time, process_end_time, process_result_info, last_process_time, create_time, operator, operate_time, 
+        operator_ip
+    </sql>
+    <select id="selectByMessageId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM task_queue_his
+        WHERE message_id = #{id,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.hanyun.platform.pay.domain.TaskQueueHis">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM task_queue_his
+        <where>
+            <if test="messageId != null">
+                AND message_id = #{messageId,jdbcType=VARCHAR}
+            </if>
+            <if test="messageType != null">
+                AND message_type = #{messageType,jdbcType=INTEGER}
+            </if>
+            <if test="message != null">
+                AND message = #{message,jdbcType=VARCHAR}
+            </if>
+            <if test="payId != null">
+                AND pay_id = #{payId,jdbcType=VARCHAR}
+            </if>
+            <if test="transId != null">
+                AND trans_id = #{transId,jdbcType=VARCHAR}
+            </if>
+            <if test="retryCount != null">
+                AND retry_count = #{retryCount,jdbcType=INTEGER}
+            </if>
+            <if test="processStatus != null">
+                AND process_status = #{processStatus,jdbcType=TINYINT}
+            </if>
+            <if test="processStartTime != null">
+                AND process_start_time = #{processStartTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="processEndTime != null">
+                AND process_end_time = #{processEndTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="processResultInfo != null">
+                AND process_result_info = #{processResultInfo,jdbcType=VARCHAR}
+            </if>
+            <if test="lastProcessTime != null">
+                AND last_process_time = #{lastProcessTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createTime != null">
+                AND create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="operator != null">
+                AND operator = #{operator,jdbcType=VARCHAR}
+            </if>
+            <if test="operateTime != null">
+                AND operate_time = #{operateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="operatorIp != null">
+                AND operator_ip = #{operatorIp,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteByMessageId" parameterType="java.lang.String">
+        DELETE FROM task_queue_his
+        WHERE message_id = #{id,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insertSelective" parameterType="com.hanyun.platform.pay.domain.TaskQueueHis">
+        INSERT INTO task_queue_his
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="messageId != null">
+                message_id,
+            </if>
+            <if test="messageType != null">
+                message_type,
+            </if>
+            <if test="message != null">
+                message,
+            </if>
+            <if test="payId != null">
+                pay_id,
+            </if>
+            <if test="transId != null">
+                trans_id,
+            </if>
+            <if test="retryCount != null">
+                retry_count,
+            </if>
+            <if test="processStatus != null">
+                process_status,
+            </if>
+            <if test="processStartTime != null">
+                process_start_time,
+            </if>
+            <if test="processEndTime != null">
+                process_end_time,
+            </if>
+            <if test="processResultInfo != null">
+                process_result_info,
+            </if>
+            <if test="lastProcessTime != null">
+                last_process_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="operator != null">
+                operator,
+            </if>
+            <if test="operateTime != null">
+                operate_time,
+            </if>
+            <if test="operatorIp != null">
+                operator_ip,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="messageId != null">
+                #{messageId,jdbcType=VARCHAR},
+            </if>
+            <if test="messageType != null">
+                #{messageType,jdbcType=INTEGER},
+            </if>
+            <if test="message != null">
+                #{message,jdbcType=VARCHAR},
+            </if>
+            <if test="payId != null">
+                #{payId,jdbcType=VARCHAR},
+            </if>
+            <if test="transId != null">
+                #{transId,jdbcType=VARCHAR},
+            </if>
+            <if test="retryCount != null">
+                #{retryCount,jdbcType=INTEGER},
+            </if>
+            <if test="processStatus != null">
+                #{processStatus,jdbcType=TINYINT},
+            </if>
+            <if test="processStartTime != null">
+                #{processStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="processEndTime != null">
+                #{processEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="processResultInfo != null">
+                #{processResultInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="lastProcessTime != null">
+                #{lastProcessTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="operator != null">
+                #{operator,jdbcType=VARCHAR},
+            </if>
+            <if test="operateTime != null">
+                #{operateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="operatorIp != null">
+                #{operatorIp,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hanyun.platform.pay.domain.TaskQueueHis">
+        UPDATE task_queue_his
+        <set>
+            <if test="messageId != null">
+                message_id = #{messageId,jdbcType=VARCHAR},
+            </if>
+            <if test="messageType != null">
+                message_type = #{messageType,jdbcType=INTEGER},
+            </if>
+            <if test="message != null">
+                message = #{message,jdbcType=VARCHAR},
+            </if>
+            <if test="payId != null">
+                pay_id = #{payId,jdbcType=VARCHAR},
+            </if>
+            <if test="transId != null">
+                trans_id = #{transId,jdbcType=VARCHAR},
+            </if>
+            <if test="retryCount != null">
+                retry_count = #{retryCount,jdbcType=INTEGER},
+            </if>
+            <if test="processStatus != null">
+                process_status = #{processStatus,jdbcType=TINYINT},
+            </if>
+            <if test="processStartTime != null">
+                process_start_time = #{processStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="processEndTime != null">
+                process_end_time = #{processEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="processResultInfo != null">
+                process_result_info = #{processResultInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="lastProcessTime != null">
+                last_process_time = #{lastProcessTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="operator != null">
+                operator = #{operator,jdbcType=VARCHAR},
+            </if>
+            <if test="operateTime != null">
+                operate_time = #{operateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="operatorIp != null">
+                operator_ip = #{operatorIp,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

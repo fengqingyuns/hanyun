@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--suppress ALL -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanyun.platform.pay.dao.PayChnBillCheckInfoDao">
+    <resultMap id="BaseResultMap" type="com.hanyun.platform.pay.domain.PayChnBillCheckInfo">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="channel" property="channel" jdbcType="VARCHAR" />
+        <result column="bill_class" property="billClass" jdbcType="VARCHAR" />
+        <result column="last_check_date" property="lastCheckDate" jdbcType="DATE" />
+        <result column="avail_status" property="availStatus" jdbcType="TINYINT" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, channel, bill_class, last_check_date, avail_status, create_time, update_time
+    </sql>
+    
+    <select id="select" resultMap="BaseResultMap" parameterType="com.hanyun.platform.pay.domain.PayChnBillCheckInfo">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM pay_chn_bill_check_info
+        WHERE channel = #{channel,jdbcType=VARCHAR}
+          AND bill_class = #{billClass,jdbcType=VARCHAR}
+    </select>
+   
+    <insert id="insertSelective" parameterType="com.hanyun.platform.pay.domain.PayChnBillCheckInfo">
+        INSERT INTO pay_chn_bill_check_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            channel,
+            bill_class,
+            <if test="lastCheckDate != null">
+                last_check_date,
+            </if>
+            <if test="availStatus != null">
+                avail_status,
+            </if>
+            create_time,
+            update_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{channel,jdbcType=VARCHAR},
+            #{billClass,jdbcType=VARCHAR},
+            <if test="lastCheckDate != null">
+                #{lastCheckDate,jdbcType=DATE},
+            </if>
+            <if test="availStatus != null">
+                #{availStatus,jdbcType=TINYINT},
+            </if>
+            now(),
+            now()
+        </trim>
+    </insert>
+    
+    <update id="updateSelective" parameterType="com.hanyun.platform.pay.domain.PayChnBillCheckInfo">
+        UPDATE pay_chn_bill_check_info
+        <set>
+            <if test="lastCheckDate != null">
+                last_check_date = #{lastCheckDate,jdbcType=DATE},
+            </if>
+            <if test="availStatus != null">
+                avail_status = #{availStatus,jdbcType=TINYINT},
+            </if>
+            update_time = now()
+        </set>
+        WHERE channel = #{channel,jdbcType=VARCHAR}
+          AND bill_class = #{billClass,jdbcType=VARCHAR}
+          <if test="lastCheckDate != null">
+               AND last_check_date <![CDATA[<]]> #{lastCheckDate,jdbcType=DATE}
+          </if>
+    </update>
+
+    <select id="getPayChnBillCheckInfo" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM pay_chn_bill_check_info
+    </select>
+
+    <update id="payChnBillUpdateStataus" parameterType="com.hanyun.platform.pay.domain.PayChnBillCheckInfo">
+        UPDATE pay_chn_bill_check_info
+        <set>
+             avail_status = #{availStatus,jdbcType=TINYINT},
+             update_time = now()
+        </set>
+        WHERE
+            bill_class = #{billClass,jdbcType=VARCHAR}
+    </update>        
+</mapper>

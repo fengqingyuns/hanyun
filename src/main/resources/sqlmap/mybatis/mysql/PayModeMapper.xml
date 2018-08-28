@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--suppress ALL -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanyun.platform.pay.dao.PayModeDao">
+    <resultMap id="BaseResultMap" type="com.hanyun.platform.pay.domain.PayMode">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="pay_type" property="payType" jdbcType="VARCHAR" />
+        <result column="type_name" property="typeName" jdbcType="VARCHAR" />
+        <result column="type_desc" property="typeDesc" jdbcType="VARCHAR" />
+        <result column="type_category" property="typeCategory" jdbcType="VARCHAR" />
+        <result column="settle_type" property="settleType" jdbcType="BIT" />
+        <result column="mch_fee_rate_def" property="mchFeeRateDef" jdbcType="INTEGER" />
+        <result column="mch_fee_max_def" property="mchFeeMaxDef" jdbcType="INTEGER" />
+        <result column="avail_status" property="availStatus" jdbcType="BIT" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <resultMap id="PayModeResResultMap" type="com.hanyun.platform.pay.vo.paymode.PayModeRes" extends="BaseResultMap">
+        <result column="chn_name" property="chnName" jdbcType="VARCHAR" />
+        <result column="channel" property="channel" jdbcType="VARCHAR" />
+        <result column="srv_status" property="srvStatus" jdbcType="BIT" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, pay_type, type_name, type_desc, type_category,settle_type,
+        mch_fee_rate_def, mch_fee_max_def, avail_status, create_time,
+        update_time
+    </sql>
+
+    <select id="selectModList" resultMap="PayModeResResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        pay_mode
+    </select>
+
+    <select id="getPayModeByPayType" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+            <include refid="Base_Column_List" />
+        FROM
+        pay_mode
+        WHERE pay_type=#{payType,jdbcType=VARCHAR}
+
+    </select>
+
+    <update id="updateAvailStatusByMode" parameterType="com.hanyun.platform.pay.vo.paymode.PayModeReq">
+        UPDATE pay_mode
+        <set>
+            <if test="availStatus != null">
+                avail_status = #{availStatus,jdbcType=BIT},
+            </if>
+            update_time=NOW()
+        </set>
+        WHERE
+        pay_type = #{payType,jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateByMode" parameterType="com.hanyun.platform.pay.vo.paymode.PayModeReq">
+        UPDATE pay_mode
+        <set>
+            <if test="mchFeeRateDef != null">
+                mch_fee_rate_def = #{mchFeeRateDef,jdbcType=INTEGER},
+            </if>
+            <if test="mchFeeMaxDef != null">
+                mch_fee_max_def = #{mchFeeMaxDef,jdbcType=INTEGER},
+            </if>
+            update_time = NOW()
+        </set>
+        WHERE
+        pay_type = #{payType,jdbcType=VARCHAR}
+    </update>
+
+</mapper>

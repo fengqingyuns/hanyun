@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--suppress ALL -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanyun.platform.pay.dao.CibAlipayRefundDao">
+    <resultMap id="BaseResultMap" type="com.hanyun.platform.pay.domain.CibAlipayRefund">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="brand_id" property="brandId" jdbcType="VARCHAR" />
+        <result column="store_id" property="storeId" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="out_trade_no" property="outTradeNo" jdbcType="VARCHAR" />
+        <result column="out_refund_no" property="outRefundNo" jdbcType="VARCHAR" />
+        <result column="pass_refund_no" property="passRefundNo" jdbcType="VARCHAR" />
+        <result column="refund_fee" property="refundFee" jdbcType="BIGINT" />
+        <result column="refund_fee_type" property="refundFeeType" jdbcType="VARCHAR" />
+        <result column="op_user_id" property="opUserId" jdbcType="VARCHAR" />
+        <result column="refund_status" property="refundStatus" jdbcType="VARCHAR" />
+        <result column="charge_fee" property="chargeFee" jdbcType="BIGINT" />
+        <result column="charge_fee_rate" property="chargeFeeRate" jdbcType="BIGINT" />
+        <result column="fund_change" property="fundChange" jdbcType="VARCHAR" />
+        <result column="gmt_refund_pay" property="gmtRefundPay" jdbcType="VARCHAR" />
+        <result column="refund_detail_item_list" property="refundDetailItemList" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, brand_id, store_id, create_time, update_time, out_trade_no, out_refund_no, pass_refund_no,
+        refund_fee, refund_fee_type, op_user_id, refund_status, charge_fee, charge_fee_rate, fund_change,
+        gmt_refund_pay,
+        refund_detail_item_list
+    </sql>
+    
+    <select id="selectByOutRefundNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM cib_alipay_refund
+        WHERE out_refund_no = #{outRefundNo,jdbcType=VARCHAR}
+    </select>
+    
+    <insert id="insert" parameterType="com.hanyun.platform.pay.domain.CibAlipayRefund">
+        INSERT INTO cib_alipay_refund
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            brand_id,
+            store_id,
+            create_time,
+            update_time,
+            out_trade_no,
+            out_refund_no,
+            <if test="passRefundNo != null">
+                pass_refund_no,
+            </if>
+            <if test="refundFee != null">
+                refund_fee,
+            </if>
+            <if test="refundFeeType != null">
+                refund_fee_type,
+            </if>
+            <if test="opUserId != null">
+                op_user_id,
+            </if>
+            <if test="refundStatus != null">
+                refund_status,
+            </if>
+            <if test="chargeFee != null">
+                charge_fee,
+            </if>
+            <if test="chargeFeeRate != null">
+                charge_fee_rate,
+            </if>
+            <if test="fundChange != null">
+                fund_change,
+            </if>
+            <if test="gmtRefundPay != null">
+                gmt_refund_pay,
+            </if>
+            <if test="refundDetailItemList != null">
+                refund_detail_item_list,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{brandId,jdbcType=VARCHAR},
+            #{storeId,jdbcType=VARCHAR},
+            now(),
+            now(),
+            #{outTradeNo,jdbcType=VARCHAR},
+            #{outRefundNo,jdbcType=VARCHAR},
+            <if test="passRefundNo != null">
+                #{passRefundNo,jdbcType=VARCHAR},
+            </if>
+            <if test="refundFee != null">
+                #{refundFee,jdbcType=BIGINT},
+            </if>
+            <if test="refundFeeType != null">
+                #{refundFeeType,jdbcType=VARCHAR},
+            </if>
+            <if test="opUserId != null">
+                #{opUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="refundStatus != null">
+                #{refundStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="chargeFee != null">
+                #{chargeFee,jdbcType=BIGINT},
+            </if>
+            <if test="chargeFeeRate != null">
+                #{chargeFeeRate,jdbcType=BIGINT},
+            </if>
+            <if test="fundChange != null">
+                #{fundChange,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtRefundPay != null">
+                #{gmtRefundPay,jdbcType=VARCHAR},
+            </if>
+            <if test="refundDetailItemList != null">
+                #{refundDetailItemList,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByOutRefundNo" parameterType="com.hanyun.platform.pay.domain.CibAlipayRefund">
+        UPDATE cib_alipay_refund
+        <set>
+            update_time = now(),
+            <if test="passRefundNo != null">
+                pass_refund_no = #{passRefundNo,jdbcType=VARCHAR},
+            </if>
+            <if test="refundFee != null">
+                refund_fee = #{refundFee,jdbcType=BIGINT},
+            </if>
+            <if test="refundFeeType != null">
+                refund_fee_type = #{refundFeeType,jdbcType=VARCHAR},
+            </if>
+            <if test="opUserId != null">
+                op_user_id = #{opUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="refundStatus != null">
+                refund_status = #{refundStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="chargeFee != null">
+                charge_fee = #{chargeFee,jdbcType=BIGINT},
+            </if>
+            <if test="chargeFeeRate != null">
+                charge_fee_rate = #{chargeFeeRate,jdbcType=BIGINT},
+            </if>
+            <if test="fundChange != null">
+                fund_change = #{fundChange,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtRefundPay != null">
+                gmt_refund_pay = #{gmtRefundPay,jdbcType=VARCHAR},
+            </if>
+            <if test="refundDetailItemList != null">
+                refund_detail_item_list = #{refundDetailItemList,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE out_refund_no = #{outRefundNo,jdbcType=VARCHAR}
+    </update>
+</mapper>

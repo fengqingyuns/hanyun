@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--suppress ALL -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanyun.platform.pay.dao.PayTransactionDao">
+    <resultMap id="BaseResultMap" type="com.hanyun.platform.pay.domain.PayTransaction">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="trans_id" property="transId" jdbcType="VARCHAR"/>
+        <result column="pay_id" property="payId" jdbcType="VARCHAR"/>
+        <result column="brand_id" property="brandId" jdbcType="VARCHAR"/>
+        <result column="store_id" property="storeId" jdbcType="VARCHAR"/>
+        <result column="order_id" property="orderId" jdbcType="VARCHAR"/>
+        <result column="order_document_id" property="orderDocumentId" jdbcType="VARCHAR"/>
+        <result column="operate_type" property="operateType" jdbcType="SMALLINT"/>
+        <result column="pay_type" property="payType" jdbcType="VARCHAR"/>
+        <result column="pay_type_detail" property="payTypeDetail" jdbcType="VARCHAR"/>
+        <result column="type_category" property="typeCategory" jdbcType="VARCHAR"/>
+        <result column="amount" property="amount" jdbcType="BIGINT"/>
+        <result column="chn_fee" property="chnFee" jdbcType="BIGINT"/>
+        <result column="mch_fee" property="mchFee" jdbcType="BIGINT"/>
+        <result column="status" property="status" jdbcType="SMALLINT"/>
+        <result column="finish_time" property="finishTime" jdbcType="TIMESTAMP"/>
+        <result column="channel" property="channel" jdbcType="VARCHAR"/>
+        <result column="settle_type" property="settleType" jdbcType="BIT"/>
+        <result column="chn_fee_rate" property="chnFeeRate" jdbcType="INTEGER"/>
+        <result column="chn_fee_max" property="chnFeeMax" jdbcType="INTEGER"/>
+        <result column="mch_fee_rate" property="mchFeeRate" jdbcType="INTEGER"/>
+        <result column="mch_fee_max" property="mchFeeMax" jdbcType="INTEGER"/>
+        <result column="source_type" property="sourceType" jdbcType="VARCHAR"/>
+        <result column="terminal_device_no" property="terminalDeviceNo" jdbcType="VARCHAR"/>
+        <result column="terminal_ip" property="terminalIp" jdbcType="VARCHAR"/>
+        <result column="operate_user" property="operateUser" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="src_pay_trans_id" property="srcPayTransId" jdbcType="VARCHAR"/>
+        <result column="refund_status" property="refundStatus" jdbcType="INTEGER"/>
+        <result column="had_refund_amount" property="hadRefundAmount" jdbcType="BIGINT"/>
+        <result column="discount_amount" property="discountAmount" jdbcType="BIGINT"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, trans_id, pay_id, brand_id, store_id,order_id, order_document_id,operate_type, 
+        pay_type, pay_type_detail, type_category, amount, chn_fee, mch_fee, status, 
+        finish_time, channel, settle_type, chn_fee_rate, 
+        chn_fee_max, mch_fee_rate, mch_fee_max, source_type,terminal_device_no,terminal_ip,operate_user,
+        create_time, update_time,src_pay_trans_id,refund_status,had_refund_amount,discount_amount
+    </sql>
+    
+    <select id="selectByTransId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM pay_transaction
+        WHERE trans_id = #{transId,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="selectPayByPayId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM pay_transaction
+        WHERE pay_id = #{payId,jdbcType=VARCHAR}
+            and operate_type = 1
+    </select>
+    
+    <select id="selectPayByPayIdAndPayType" resultMap="BaseResultMap" parameterType="com.hanyun.platform.pay.domain.PayTransaction">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM pay_transaction
+        WHERE pay_id = #{payId,jdbcType=VARCHAR}
+            and operate_type = 1
+            and pay_type = #{payType,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="selectRefProcessByPayIdAndPayType" resultMap="BaseResultMap" parameterType="com.hanyun.platform.pay.domain.PayTransaction">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM pay_transaction
+        WHERE pay_id = #{payId,jdbcType=VARCHAR}
+            and operate_type = 2
+            and status = 10
+            and pay_type = #{payType,jdbcType=VARCHAR}
+    </select>
+    
+    <insert id="insert" parameterType="com.hanyun.platform.pay.domain.PayTransaction">
+        INSERT INTO pay_transaction (
+            trans_id, 
+            src_pay_trans_id,
+            pay_id, 
+            brand_id, 
+            store_id, 
+            order_id, 
+            order_document_id,
+            operate_type, 
+            pay_type, 
+            pay_type_detail,
+            type_category, 
+            amount, 
+            discount_amount,
+            chn_fee, 
+            mch_fee,
+            status, 
+            channel,
+            settle_type,
+            chn_fee_rate,
+            chn_fee_max,
+            mch_fee_rate,
+            mch_fee_max,
+            source_type,
+            terminal_device_no,
+            terminal_ip,
+            operate_user,
+            create_time, 
+            update_time)
+        VALUES (
+            #{transId,jdbcType=VARCHAR}, 
+            #{srcPayTransId,jdbcType=VARCHAR}, 
+            #{payId,jdbcType=VARCHAR}, 
+            #{brandId,jdbcType=VARCHAR}, 
+            #{storeId,jdbcType=VARCHAR},  
+            #{orderId,jdbcType=VARCHAR}, 
+            #{orderDocumentId,jdbcType=VARCHAR},
+            #{operateType,jdbcType=SMALLINT}, 
+            #{payType,jdbcType=VARCHAR},
+            #{payTypeDetail,jdbcType=VARCHAR},
+            #{typeCategory,jdbcType=VARCHAR},
+            #{amount,jdbcType=BIGINT}, 
+            #{discountAmount,jdbcType=BIGINT}, 
+            #{chnFee,jdbcType=BIGINT}, 
+            #{mchFee,jdbcType=BIGINT}, 
+            #{status,jdbcType=SMALLINT}, 
+            #{channel,jdbcType=VARCHAR},
+            #{settleType,jdbcType=BIT},
+            #{chnFeeRate,jdbcType=INTEGER},
+            #{chnFeeMax,jdbcType=INTEGER},
+            #{mchFeeRate,jdbcType=INTEGER},
+            #{mchFeeMax,jdbcType=INTEGER},
+            #{sourceType,jdbcType=VARCHAR},
+            #{terminalDeviceNo,jdbcType=VARCHAR},
+            #{terminalIp,jdbcType=VARCHAR},
+            #{operateUser,jdbcType=VARCHAR},
+            now(), 
+            now())
+    </insert>
+
+    <update id="updateStatusByTransId" parameterType="com.hanyun.platform.pay.domain.PayTransaction">
+        UPDATE pay_transaction
+        SET 
+            status = #{status,jdbcType=SMALLINT},
+            <if test="finishTime != null">
+                finish_time = #{finishTime,jdbcType=TIMESTAMP},
+            </if>
+            update_time = now()
+        WHERE trans_id = #{transId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updatePayTransRefundInfoByTransId" parameterType="com.hanyun.platform.pay.domain.PayTransaction">
+        UPDATE pay_transaction
+        SET 
+            refund_status = #{refundStatus,jdbcType=SMALLINT},
+            had_refund_amount = #{hadRefundAmount,jdbcType=BIGINT},
+            update_time = now()
+        WHERE trans_id = #{transId,jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updatePayTypeInfoByTransId" parameterType="com.hanyun.platform.pay.domain.PayTransaction">
+    	UPDATE pay_transaction
+    		SET
+    		<if test="payTypeDetail != null">
+    			pay_type_detail = #{payTypeDetail,jdbcType=VARCHAR},
+    		</if>
+    		<if test="chnFeeRate != null">
+    			chn_fee_rate = #{chnFeeRate,jdbcType=INTEGER},
+    		</if>
+    		<if test="chnFeeMax != null">
+    			chn_fee_max = #{chnFeeMax,jdbcType=INTEGER},
+    		</if>
+    		<if test="mchFeeRate != null">
+    			mch_fee_rate = #{mchFeeRate,jdbcType=INTEGER},
+    		</if>
+    		<if test="mchFeeMax != null">
+    			mch_fee_max = #{mchFeeMax,jdbcType=INTEGER},
+    		</if>
+    		<if test="chnFee != null">
+    			chn_fee = #{chnFee,jdbcType=INTEGER},
+    		</if>
+    		<if test="mchFee != null">
+    			mch_fee = #{mchFee,jdbcType=INTEGER},
+    		</if>
+    		update_time = now()
+	   WHERE trans_id = #{transId,jdbcType=VARCHAR}
+    </update>
+            
+</mapper>

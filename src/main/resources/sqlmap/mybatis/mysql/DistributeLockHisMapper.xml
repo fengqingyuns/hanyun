@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--suppress ALL -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanyun.platform.pay.dao.DistributeLockHisDao">
+    <resultMap id="BaseResultMap" type="com.hanyun.platform.pay.domain.DistributeLockHis">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="business_key" property="businessKey" jdbcType="VARCHAR"/>
+        <result column="release_type" property="releaseType" jdbcType="TINYINT"/>
+        <result column="release_time" property="releaseTime" jdbcType="TIMESTAMP"/>
+        <result column="operator" property="operator" jdbcType="VARCHAR"/>
+        <result column="operate_time" property="operateTime" jdbcType="TIMESTAMP"/>
+        <result column="operator_ip" property="operatorIp" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, business_key, release_type, release_time, operator, operate_time, operator_ip
+    </sql>
+    <!-- 新增分布式锁记录 -->
+    <insert id="addDistributeLockHis" parameterType="com.hanyun.platform.pay.domain.DistributeLockHis">
+        INSERT INTO distribute_lock_his
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                id,
+                business_key,
+                release_type,
+                release_time,
+                operator,
+                operate_time,
+                operator_ip
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+             #{id,jdbcType=BIGINT},
+             #{businessKey,jdbcType=VARCHAR},
+             #{releaseType,jdbcType=TINYINT},
+             now(),
+             #{operator,jdbcType=VARCHAR},
+             now(),
+             #{operatorIp,jdbcType=VARCHAR}
+        </trim>
+    </insert>  
+  <!-- 更新分布式锁信息 -->
+    <update id="updateDistributeLockHis" parameterType="com.hanyun.platform.pay.domain.DistributeLockHis">
+        UPDATE distribute_lock_his
+        <set>
+              release_type = 1,
+              release_time = now(),
+        </set>
+        WHERE 
+             business_key = #{businessKey}
+             and operator = #{operator}
+    </update>  
+  
+    
+    
+</mapper>

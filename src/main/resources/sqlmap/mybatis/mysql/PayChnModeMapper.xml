@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--suppress ALL -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanyun.platform.pay.dao.PayChnModeDao">
+    <resultMap id="BaseResultMap" type="com.hanyun.platform.pay.domain.PayChnMode">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="pay_type" property="payType" jdbcType="VARCHAR" />
+        <result column="channel" property="channel" jdbcType="VARCHAR" />
+        <result column="settle_type" property="settleType" jdbcType="BIT" />
+        <result column="chn_fee_rate" property="chnFeeRate" jdbcType="INTEGER" />
+        <result column="chn_fee_max" property="chnFeeMax" jdbcType="INTEGER" />
+        <result column="srv_status" property="srvStatus" jdbcType="BIT" />
+        <result column="avail_status" property="availStatus" jdbcType="BIT" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <resultMap id="PayModeDetailResultMap" type="com.hanyun.platform.pay.vo.paymode.PayModeDetailRes" extends="BaseResultMap">
+        <result column="chn_name" property="chnName" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="PayChannelDetailResultMap" type="com.hanyun.platform.pay.vo.paymode.PayChannelDetailRes"
+        extends="BaseResultMap">
+        <result column="type_name" property="typeName" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, pay_type, channel, settle_type, fee_rate, srv_status, avail_status, create_time, update_time
+    </sql>
+
+    <!-- 支付通道详情 -->
+    <select id="selectPayChannelDetailByChannel" parameterType="com.hanyun.platform.pay.vo.paymode.PayChannelDetailReq"
+        resultMap="PayChannelDetailResultMap">
+        SELECT DISTINCT
+        pay_chn_mode.pay_type,
+        pay_mode.type_name,
+        pay_chn_mode.channel,
+        pay_chn_mode.create_time,
+        pay_mode.avail_status,
+        pay_chn_mode.settle_type,
+        pay_chn_mode.srv_status,
+        pay_chn_mode.chn_fee_rate,
+        pay_chn_mode.chn_fee_max
+        FROM
+        pay_channel
+        LEFT JOIN pay_chn_mode ON pay_channel.channel = pay_chn_mode.channel
+        LEFT JOIN pay_mode ON pay_chn_mode.pay_type = pay_mode.pay_type
+
+        WHERE pay_chn_mode.channel= #{channel,jdbcType=VARCHAR}
+
+    </select>
+    <!-- 支付方式详情 -->
+    <select id="selectPayModeDetailByMode" parameterType="com.hanyun.platform.pay.vo.paymode.PayModeDetailReq"
+        resultMap="PayModeDetailResultMap">
+        SELECT
+        pay_channel.channel,
+        pay_channel.chn_name,
+        pay_mode.settle_type,
+        pay_chn_mode.srv_status,
+        pay_channel.avail_status,
+        pay_chn_mode.create_time,
+        pay_chn_mode.pay_type,
+        pay_chn_mode.chn_fee_rate,
+        pay_chn_mode.chn_fee_max
+        FROM
+        pay_channel
+        LEFT JOIN pay_chn_mode ON pay_channel.channel = pay_chn_mode.channel
+        LEFT JOIN pay_mode ON pay_chn_mode.pay_type = pay_mode.pay_type
+
+        WHERE pay_mode.pay_type=#{payType,jdbcType=VARCHAR}
+
+    </select>
+
+    <update id="updateBychannel" parameterType="com.hanyun.platform.pay.domain.PayChnMode">
+        UPDATE pay_chn_mode
+        <set>
+            <if test="availStatus != null">
+                avail_status = #{availStatus,jdbcType=BIT},
+            </if>
+            <if test="srvStatus != null">
+                srv_status = #{srvStatus,jdbcType=BIT},
+            </if>
+            update_time = now(),
+        </set>
+        WHERE channel = #{channel,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateByMode" parameterType="com.hanyun.platform.pay.domain.PayChnMode">
+        UPDATE pay_chn_mode
+        <set>
+            <if test="availStatus != null">
+                avail_status = #{availStatus,jdbcType=BIT},
+            </if>
+            <if test="srvStatus != null">
+                srv_status = #{srvStatus,jdbcType=BIT},
+            </if>
+            update_time = now(),
+        </set>
+        WHERE pay_type = #{payType,jdbcType=VARCHAR}
+    </update>
+
+    <update id="offlineAllByPayType" parameterType="java.lang.String">
+        UPDATE pay_chn_mode
+        <set>
+            srv_status = 0,
+        </set>
+        WHERE
+        pay_type = #{payType,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateOneServStatus" parameterType="com.hanyun.platform.pay.vo.paymode.PayChnModeReq">
+        UPDATE pay_chn_mode
+        <set>
+            <if test="srvStatus != null">
+                srv_status = #{srvStatus,jdbcType=BIT},
+            </if>
+            update_time = now(),
+        </set>
+        WHERE channel = #{channel,jdbcType=VARCHAR} AND pay_type= #{payType,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateOneFeeRate" parameterType="com.hanyun.platform.pay.vo.paymode.PayChnModeReq">
+        UPDATE pay_chn_mode
+        <set>
+            <if test="chnFeeRate != null">
+                chn_fee_rate = #{chnFeeRate,jdbcType=INTEGER},
+            </if>
+            <if test="chnFeeMax != null">
+                chn_fee_max = #{chnFeeMax,jdbcType=INTEGER},
+            </if>
+            update_time = now(),
+        </set>
+        WHERE channel = #{channel,jdbcType=VARCHAR} AND pay_type= #{payType,jdbcType=VARCHAR}
+    </update>
+
+</mapper>

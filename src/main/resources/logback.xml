@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date [%5p] - %25c - %m%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${APP_HOME}/logs/payment-api.%d{yyyy-MM-dd_HH}.log</fileNamePattern>
+            <maxHistory>168</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date [%5p] - %25c - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="SQL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${APP_HOME}/logs/sql.%d{yyyy-MM-dd_HH}.log</fileNamePattern>
+            <maxHistory>168</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date [%5p] - %25c - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="druid.sql" level="${LOGGER_LEVEL:-DEBUG}" additivity="false">
+        <appender-ref ref="SQL"/>
+    </logger>
+    <logger name="org.mybatis" level="${LOGGER_LEVEL:-DEBUG}" additivity="false">
+        <appender-ref ref="SQL"/>
+    </logger>
+    <logger name="com.hanyun.platform.pay.dao" level="${LOGGER_LEVEL:-DEBUG}" additivity="false">
+        <appender-ref ref="SQL"/>
+    </logger>
+    <logger name="org.springframework.jdbc" level="${LOGGER_LEVEL:-DEBUG}" additivity="false">
+        <appender-ref ref="SQL"/>
+    </logger>
+
+    <logger name="org.apache.http" level="${LOGGER_LEVEL:-INFO}" additivity="false">
+        <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
+    </logger>
+    <logger name="org.eclipse" level="${LOGGER_LEVEL:-INFO}" additivity="false">
+        <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
+    </logger>
+    <logger name="org.apache.commons" level="${LOGGER_LEVEL:-INFO}" additivity="false">
+        <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
+    </logger>
+    
+    <root level="${LOGGER_LEVEL:-DEBUG}">
+        <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
+    </root>
+</configuration>
